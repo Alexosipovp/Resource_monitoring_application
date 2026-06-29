@@ -1,13 +1,14 @@
 #include <iostream>
-#include "./headers/test.h"
+#include <QApplication>
+#include <QLabel>
 
-int main(int argc, char *argv[]) {
+#include "headers/test.h"
+
+int main(int argc, char *argv[])
+{
     QApplication app(argc, argv);
-
-    MyWindow window;
-    window.setWindowTitle("Простое Qt-приложение");
-    window.resize(300, 150);
-    window.show();
-
+    QLabel label;
+    label.setText("Hello world " + QString::number(test_func()));
+    label.show();
     return app.exec();
 }
