@@ -2,7 +2,7 @@
 #include <QApplication>
 #include <QLabel>
 
-#include "headers/test.h"
+#include "headers/mainwindow.h"
 
 int main(int argc, char *argv[])
 {
