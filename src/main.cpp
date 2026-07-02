@@ -1,14 +1,15 @@
-#include <iostream>
-#include <QApplication>
-#include <QLabel>
+#include <memory>
 
-#include "headers/test.h"
+#include "headers/PlatformFactory.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
-    QLabel label;
-    label.setText("Hello world " + QString::number(test_func()));
-    label.show();
-    return app.exec();
+    std::unique_ptr<IPlatformAPI> api = PlatformFactory::create();
+    if (!api) {
+        cout << "Unsupported platform!" << endl;
+        return 1;
+    }
+
+    cout << "Running on: " << api->getSystemName() << endl;
+    return 0;
 }
