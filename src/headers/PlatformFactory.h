@@ -5,7 +5,7 @@
 
 class PlatformFactory {
 public:
-    static std::unique_ptr<IPlatformAPI> create() {
+    static std::unique_ptr<PlatformAPI> create() {
         #ifdef _WIN32
             return std::unique_ptr<WindowsAPI>(new LinuxAPI());
         #elif defined(__linux__)
