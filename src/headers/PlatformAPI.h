@@ -9,7 +9,7 @@ public:
     virtual ~PlatformAPI() {};
 
     virtual std::string getSystemName() = 0;
-    void PIDMonitor(int);
+    void followApp(string);
     void enableMonitoring(bool);
 
     double getSystemCpuUsagePercent();
@@ -33,7 +33,7 @@ public:
     virtual void usDelay(int) = 0;
 
 protected:
-    int pid = -1;
+    string nameApp;
     bool monitoring = false;
     double SystemCpuUsagePercent = 0;
     double AppCpuUsagePercent = 0;

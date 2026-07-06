@@ -1,7 +1,8 @@
 #include "./../headers/PlatformAPI.h"
 
-void PlatformAPI::PIDMonitor(int pid) {
-    this->pid = pid;
+void PlatformAPI::followApp(string nameApp) {
+    this->nameApp = nameApp;
+    return;
 }
 
 void PlatformAPI::enableMonitoring(bool enable) {

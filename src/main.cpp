@@ -10,9 +10,11 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    api->followApp("firefox");
+
     while (true) {
         api->updateData();
-        cout << api->getDiskWriteSpeedMBps() << endl;
+        cout << api->getSystemMemoryUsagePercent() << " " << api->getAppCpuUsagePercent() << endl;
 
         api->usDelay(1000000);
     }

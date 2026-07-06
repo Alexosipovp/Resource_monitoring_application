@@ -1,10 +1,55 @@
 #include "./../headers/LinuxAPI.h"
 
-std::string LinuxAPI::getSystemName() {
+string LinuxAPI::getSystemName() {
    return "Linux";
 }
 
+// ------------------------------------------- Поиск PID -------------------------------------------
+void LinuxAPI::updatePid() {
+   DIR* dir = opendir("/proc");
+   if (!dir) {
+      this->pid = -1;
+      return;
+   }
 
+   struct dirent* entry;
+   while ((entry = readdir(dir)) != nullptr) {
+      if (entry->d_type != DT_DIR) continue;
+      const char* name = entry->d_name;
+      char* endptr;
+      long pid = strtol(name, &endptr, 10);
+      if (*endptr != '\0' || pid <= 0) continue;
+
+      string commPath = "/proc/" + string(name) + "/comm";
+      ifstream commFile(commPath);
+      if (!commFile.is_open()) continue;
+
+      string comm;
+      getline(commFile, comm);
+      if (!comm.empty() && comm.back() == '\n') comm.pop_back();
+
+      if (comm == nameApp) {
+         closedir(dir);
+         this->pid = static_cast<int>(pid);
+         return;
+      }
+   }
+
+   closedir(dir);
+   this->pid = -1;
+   return;
+}
+
+void LinuxAPI::updateData() {
+   updatePid();
+   updateSystemCpu();
+   updateAppCpu();
+   updateSystemMemory();
+   updateAppMemory();
+   updateTasksCount();
+   updateThreadsCount();
+   updateDiskStats();
+}
 
 // ------------------------------------- Чтение системного CPU -------------------------------------
 void LinuxAPI::updateSystemCpu() {
@@ -45,7 +90,64 @@ void LinuxAPI::updateSystemCpu() {
    return;
 }
 
+
+// -------------------------------------- Чтение CPU процесса --------------------------------------
 void LinuxAPI::updateAppCpu() {
+   if (pid <= 0) {
+      AppCpuUsagePercent = 0.0;
+      return;
+   }
+   string statPath = "/proc/" + to_string(pid) + "/stat";
+   ifstream statFile(statPath);
+   if (!statFile.is_open()) {
+      AppCpuUsagePercent = 0.0;
+      return;
+   }
+   string line;
+   getline(statFile, line);
+   istringstream iss(line);
+   vector<string> tokens;
+   string token;
+   while (iss >> token) tokens.push_back(token);
+   if (tokens.size() < 24) {
+      AppCpuUsagePercent = 0.0;
+      return;
+   }
+   unsigned long long utime = std::stoull(tokens[13]);
+   unsigned long long stime = std::stoull(tokens[14]);
+   unsigned long long cutime = std::stoull(tokens[15]);
+   unsigned long long cstime = std::stoull(tokens[16]);
+   unsigned long long starttime = std::stoull(tokens[21]);
+
+   ProcCpuStats cur{utime, stime, cutime, cstime, starttime};
+
+   ifstream statSys("/proc/stat");
+   if (!statSys.is_open()) {
+      AppCpuUsagePercent = 0.0;
+      return;
+   }
+   string lineSys;
+   unsigned long long sysTotal = 0;
+   while (getline(statSys, lineSys)) {
+      if (lineSys.compare(0, 4, "cpu ") == 0) {
+            istringstream issSys(lineSys.substr(4));
+            unsigned long long val;
+            while (issSys >> val) sysTotal += val;
+            break;
+      }
+   }
+
+   if (!firstProcCpu) {
+      unsigned long long procDiff = (cur.utime + cur.stime) - (prevProcCpu.utime + prevProcCpu.stime);
+      unsigned long long sysDiff = sysTotal - prevSysTotal;
+      if (sysDiff > 0) {
+            double usage = 100.0 * procDiff / sysDiff;
+            AppCpuUsagePercent = usage;
+      }
+   }
+   prevProcCpu = cur;
+   prevSysTotal = sysTotal;
+   firstProcCpu = false;
    return;
 }
 
@@ -77,7 +179,27 @@ void LinuxAPI::updateSystemMemory() {
    return;
 }
 
+// ---------------------------------------- Память процесса ----------------------------------------
 void LinuxAPI::updateAppMemory() {
+   if (pid <= 0) {
+      AppMemoryUsageMB = 0;
+      return;
+   }
+   string statmPath = "/proc/" + to_string(pid) + "/statm";
+   ifstream statm(statmPath);
+   if (!statm.is_open()) {
+      AppMemoryUsageMB = 0;
+      return;
+   }
+   unsigned long long size, resident, share, text, lib, data, dt;
+   statm >> size >> resident >> share >> text >> lib >> data >> dt;
+   long pageSize = sysconf(_SC_PAGESIZE);
+   if (pageSize > 0) {
+      unsigned long long rssBytes = resident * pageSize;
+      AppMemoryUsageMB = rssBytes / (1024 * 1024);
+   } else {
+      AppMemoryUsageMB = 0;
+   }
    return;
 }
 
