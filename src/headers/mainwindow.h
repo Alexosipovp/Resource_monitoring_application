@@ -1,5 +1,5 @@
-#include <QtWidgets>  
-
+#include <QtWidgets>
+#include "PlatformFactory.h"
 
 /**
  * @brief Главное окно монитора ресурсов
@@ -15,6 +15,8 @@ public:
     bool getCheckbox();
 
 private:
+    unique_ptr<PlatformAPI> api;
+
     QTimer* updateTimer;
 
     void updateData();

@@ -5,23 +5,28 @@ SystemMonitorWindow::SystemMonitorWindow(QWidget *parent)
 {
     setupUI();
 
+    api = PlatformFactory::create();
+    api->followApp("firefox");
+
     updateTimer = new QTimer(this);
     connect(updateTimer, &QTimer::timeout, this, &SystemMonitorWindow::updateData);
-    updateTimer->start(1000);
+    updateTimer->start(500);
 }
 
 void SystemMonitorWindow::updateData()
 {
+    if (monitoringCheckBox->isChecked()) {
+        api->updateData();
     
-    int cpu = rand() % 100;
-    cpuSystemProgress->setValue(cpu);
-    cpuAppProgress->setValue(cpu);
-    memorySystemProgress->setValue(cpu);
-    memoryAppValue->setNum(cpu);
-    processesCountValue->setNum(cpu);
-    threadsValue->setNum(cpu);
-    readValue->setNum(cpu);
-    writeValue->setNum(cpu);
+        cpuSystemProgress->setValue(api->getSystemCpuUsagePercent());
+        cpuAppProgress->setValue(api->getAppCpuUsagePercent());
+        memorySystemProgress->setValue(api->getSystemMemoryUsagePercent());
+        memoryAppValue->setNum(double(api->getAppMemoryUsageMB()));
+        processesCountValue->setNum(double(api->getRunningTasksCount()));
+        threadsValue->setNum(double(api->getAppThreadsCount()));
+        readValue->setText(QString("%1 Mb/c").arg(api->getDiskReadSpeedMBps()));
+        writeValue->setText(QString("%1 Mb/c").arg(api->getDiskWriteSpeedMBps()));
+    }
 }
 
 SystemMonitorWindow::~SystemMonitorWindow()

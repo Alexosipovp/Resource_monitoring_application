@@ -1,8 +1,5 @@
-#include <QtWidgets/QApplication>
 #include <memory>
-
 #include "headers/mainwindow.h"
-#include "headers/PlatformFactory.h"
 
 int main(int argc, char *argv[])
 {
@@ -10,12 +7,6 @@ int main(int argc, char *argv[])
     
     SystemMonitorWindow window;
     window.show();
-    
-    std::unique_ptr<PlatformAPI> api = PlatformFactory::create();
-    if (!api) {
-        cout << "Unsupported platform!" << endl;
-        return 1;
-    }
 
     return app.exec();
 
