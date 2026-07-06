@@ -12,11 +12,11 @@ int main(int argc, char *argv[])
 
     while (true) {
         api->updateData();
-        cout << api->getSystemMemoryUsagePercent() << endl;
+        cout << api->getDiskWriteSpeedMBps() << endl;
 
         api->usDelay(1000000);
     }
 
-    cout << "Running on: " << api->getSystemName() << endl;
+    cout << "Running on: " << api->getRunningTasksCount() << endl;
     return 0;
 }

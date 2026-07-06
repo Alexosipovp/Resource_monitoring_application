@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <fstream>
 #include <sstream>
+#include <dirent.h>
 
 #include "PlatformAPI.h"
 
@@ -32,7 +33,14 @@ private:
     };
 
     bool firstSysCpu = true;
+    bool diskDeviceFound = false;
+    string diskDevice;
     CpuStats prevSysCpu; 
+    double diskReadMBps;
+    double diskWriteMBps;
+    bool firstDisk = true;
+    unsigned long long prevWriteSectors = 0;
+    unsigned long long prevReadSectors = 0;
 };
 
 #endif
