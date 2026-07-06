@@ -3,6 +3,7 @@
 
 #include "headers/mainwindow.h"
 #include "headers/PlatformFactory.h"
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -10,6 +11,17 @@ int main(int argc, char *argv[])
     SystemMonitorWindow window;
     window.show();
     
+    std::unique_ptr<PlatformAPI> api = PlatformFactory::create();
+    if (!api) {
+        cout << "Unsupported platform!" << endl;
+        return 1;
+    }
+
+    while (true) {
+        //cout << window.getCheckbox() << endl;
+        api->usDelay(1000000);
+    }
+
     return app.exec();
 
     /*

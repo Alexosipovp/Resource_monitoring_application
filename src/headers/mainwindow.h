@@ -12,6 +12,8 @@ public:
     SystemMonitorWindow(QWidget *parent = nullptr);
     ~SystemMonitorWindow();
 
+    bool getCheckbox();
+
 private:
     void setupUI();                 // Настройка интерфейса
 

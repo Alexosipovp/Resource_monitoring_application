@@ -10,6 +10,10 @@ SystemMonitorWindow::~SystemMonitorWindow()
 {
 }
 
+bool SystemMonitorWindow::getCheckbox() {
+    return monitoringCheckBox->checkState();
+}
+
 void SystemMonitorWindow::setupUI()
 {
     setWindowTitle("Монитор ресурсов");
