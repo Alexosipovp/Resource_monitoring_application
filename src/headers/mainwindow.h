@@ -15,6 +15,10 @@ public:
     bool getCheckbox();
 
 private:
+    QTimer* updateTimer;
+
+    void updateData();
+
     void setupUI();                 // Настройка интерфейса
 
     void createCPUGroup();          // Создание секции CPU

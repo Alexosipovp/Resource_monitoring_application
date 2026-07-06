@@ -4,6 +4,24 @@ SystemMonitorWindow::SystemMonitorWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     setupUI();
+
+    updateTimer = new QTimer(this);
+    connect(updateTimer, &QTimer::timeout, this, &SystemMonitorWindow::updateData);
+    updateTimer->start(1000);
+}
+
+void SystemMonitorWindow::updateData()
+{
+    
+    int cpu = rand() % 100;
+    cpuSystemProgress->setValue(cpu);
+    cpuAppProgress->setValue(cpu);
+    memorySystemProgress->setValue(cpu);
+    memoryAppValue->setNum(cpu);
+    processesCountValue->setNum(cpu);
+    threadsValue->setNum(cpu);
+    readValue->setNum(cpu);
+    writeValue->setNum(cpu);
 }
 
 SystemMonitorWindow::~SystemMonitorWindow()

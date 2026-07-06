@@ -17,11 +17,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    while (true) {
-        //cout << window.getCheckbox() << endl;
-        api->usDelay(1000000);
-    }
-
     return app.exec();
 
     /*
