@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
     while (true) {
         api->updateData();
-        cout << api->getSystemMemoryUsagePercent() << " " << api->getAppCpuUsagePercent() << endl;
+        cout << api->getAppThreadsCount() << endl;
 
         api->usDelay(1000000);
     }

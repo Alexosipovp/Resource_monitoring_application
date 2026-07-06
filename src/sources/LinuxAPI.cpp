@@ -90,7 +90,6 @@ void LinuxAPI::updateSystemCpu() {
    return;
 }
 
-
 // -------------------------------------- Чтение CPU процесса --------------------------------------
 void LinuxAPI::updateAppCpu() {
    if (pid <= 0) {
@@ -113,11 +112,11 @@ void LinuxAPI::updateAppCpu() {
       AppCpuUsagePercent = 0.0;
       return;
    }
-   unsigned long long utime = std::stoull(tokens[13]);
-   unsigned long long stime = std::stoull(tokens[14]);
-   unsigned long long cutime = std::stoull(tokens[15]);
-   unsigned long long cstime = std::stoull(tokens[16]);
-   unsigned long long starttime = std::stoull(tokens[21]);
+   unsigned long long utime = stoull(tokens[13]);
+   unsigned long long stime = stoull(tokens[14]);
+   unsigned long long cutime = stoull(tokens[15]);
+   unsigned long long cstime = stoull(tokens[16]);
+   unsigned long long starttime = stoull(tokens[21]);
 
    ProcCpuStats cur{utime, stime, cutime, cstime, starttime};
 
@@ -226,7 +225,29 @@ void LinuxAPI::updateTasksCount() {
    return;
 }
 
+// ---------------------------------- Количество потоков процесса ----------------------------------
 void LinuxAPI::updateThreadsCount() {
+   if (pid <= 0) {
+      AppThreadsCount = 0;
+      return;
+   }
+   string statusPath = "/proc/" + to_string(pid) + "/status";
+   ifstream status(statusPath);
+   if (!status.is_open()) {
+      AppThreadsCount = 0;
+      return;
+   }
+   string line;
+   unsigned int threads = 0;
+   while (getline(status, line)) {
+      if (line.compare(0, 8, "Threads:") == 0) {
+            istringstream iss(line);
+            string key;
+            iss >> key >> threads;
+            break;
+      }
+   }
+   AppThreadsCount = threads;
    return;
 }
 
