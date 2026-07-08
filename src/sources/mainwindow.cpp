@@ -83,8 +83,8 @@ void SystemMonitorWindow::createCPUGroup()
     cpuSystemProgress->setFormat("%p%"); 
     cpuSystemProgress->setFixedHeight(21);
     
-    // Строка 2: СПО АСЦП
-    cpuAppLabel = new QLabel("СПО АСЦП", this);
+    // Строка 2: Приложение
+    cpuAppLabel = new QLabel("Приложение", this);
     cpuAppProgress = new QProgressBar(this);
     cpuAppProgress->setRange(0, 100);
     cpuAppProgress->setValue(0);
@@ -113,8 +113,8 @@ void SystemMonitorWindow::createMemoryGroup()
     memorySystemProgress->setFormat("%p%"); 
     memorySystemProgress->setFixedHeight(21);
     
-    // Строка 2: СПО АСЦП
-    memoryAppLabel = new QLabel("СПО АСЦП", this);
+    // Строка 2: Приложение
+    memoryAppLabel = new QLabel("Приложение", this);
     memoryAppValue = new QLabel("299 МБ", this);
     memoryAppValue->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     
@@ -133,8 +133,8 @@ void SystemMonitorWindow::createProcessGroup()
     processesCountValue = new QLabel("0", this);
     processesCountValue->setAlignment(Qt::AlignRight);
     
-    // Строка 2: Потоков СПО АСЦП
-    threadsLabel = new QLabel("Потоков СПО АСЦП", this);
+    // Строка 2: Потоков приложения
+    threadsLabel = new QLabel("Потоков приложения", this);
     threadsValue = new QLabel("29", this);
     threadsValue->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     
